@@ -46,29 +46,6 @@ app.get('/healthz', (req, res) => {
   });
 });
 
-// Dashboard - List all links
-app.get('/', async (req, res) => {
-  try {
-    const links = await prisma.url.findMany({
-      orderBy: {
-        createdAt: 'desc'
-      },
-      select: {
-        shortCode: true,
-        originalUrl: true,
-        clicks: true,
-        lastClickedAt: true,
-        createdAt: true
-      }
-    });
-
-    res.json(links);
-  } catch (error) {
-    console.error('Error fetching links:', error);
-    res.status(500).json({ error: 'Failed to fetch links' });
-  }
-});
-
 // Create short link (POST /api/links)
 app.post('/api/links', async (req, res) => {
   try {
