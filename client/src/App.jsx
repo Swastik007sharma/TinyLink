@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import './App.css';
 import UrlShortener from './components/UrlShortener';
 import LinksList from './components/LinksList';
 import StatsView from './components/StatsView';
 
-const API_URL = import.meta.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 function App() {
   const [links, setLinks] = useState([]);
@@ -101,47 +100,54 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>🔗 TinyLink</h1>
-        <p>Shorten your URLs and track clicks</p>
-      </header>
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="max-w-6xl mx-auto">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">🔗 TinyLink</h1>
+          <p className="text-gray-600">Shorten your URLs and track clicks</p>
+        </header>
 
-      {error && (
-        <div className="error-banner">
-          <span>⚠️ {error}</span>
-          <button onClick={() => setError('')}>✕</button>
-        </div>
-      )}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg flex justify-between items-center">
+            <span>⚠️ {error}</span>
+            <button
+              onClick={() => setError('')}
+              className="text-red-600 hover:text-red-800 font-bold text-xl"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
-      <main className="app-main">
-        <section className="section">
-          <UrlShortener
-            onCreateLink={createLink}
-            loading={loading}
-            apiUrl={API_URL}
-          />
-        </section>
-
-        <section className="section">
-          <LinksList
-            links={links}
-            onDelete={deleteLink}
-            onViewStats={fetchStats}
-            loading={loading}
-            apiUrl={API_URL}
-          />
-        </section>
-
-        {selectedLink && (
-          <section className="section">
-            <StatsView
-              link={selectedLink}
-              onClose={() => setSelectedLink(null)}
+        <main className="space-y-8">
+          <section className="bg-white rounded-lg shadow-sm p-6">
+            <UrlShortener
+              onCreateLink={createLink}
+              loading={loading}
+              apiUrl={API_URL}
             />
           </section>
-        )}
-      </main>
+
+          <section className="bg-white rounded-lg shadow-sm p-6">
+            <LinksList
+              links={links}
+              onDelete={deleteLink}
+              onViewStats={fetchStats}
+              loading={loading}
+              apiUrl={API_URL}
+            />
+          </section>
+
+          {selectedLink && (
+            <section>
+              <StatsView
+                link={selectedLink}
+                onClose={() => setSelectedLink(null)}
+              />
+            </section>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
